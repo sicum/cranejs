@@ -9,29 +9,29 @@
   "main": "crane.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/mmacmillan/cranejs.git"
+    "url": "git://github.com/sicum/cranejs.git"
   },
   "bugs": {
-    "url": "https://github.com/mmacmillan/cranejs/issues"
+    "url": "https://github.com/sicum/cranejs/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/mmacmillan/cranejs/blob/master/LICENSE-MIT"
+      "url": "https://github.com/sicum/cranejs/blob/master/LICENSE-MIT"
     }
   ],
-  "homepage": "https://github.com/mmacmillan/cranejs",
+  "homepage": "https://github.com/sicum/cranejs",
   "dependencies": {
-    "express": "3.2.x",
-    "request": "2.27.0",
-    "cors": "1.0.x",
+    "express": "4.15.5",
+    "request": "2.83.1",
+    "cors": "2.8.4",
     "lodash": "*",
-    "consolidate": "0.9.x",
-    "handlebars": "1.0.10",
-    "less": "1.4.x",
-    "q": "0.9.x",
-    "mongoose": "3.6.x",
-    "mongoose-q": "0.0.x"
+    "consolidate": "0.14.5",
+    "handlebars": "5.0.0-alpha.1",
+    "less": "3.0.0-alpha.2",
+    "q": "1.5.0",
+    "mongoose": "4.11.14-pre",
+    "mongoose-q": "0.1.0"
   },
   "keywords": [
     "mvc",

@@ -23,7 +23,7 @@
   "homepage": "https://github.com/sicum/cranejs",
   "dependencies": {
     "express": "4.15.5",
-    "request": "2.83.1",
+    "request": "2.83.0",
     "cors": "2.8.4",
     "lodash": "*",
     "consolidate": "0.14.5",

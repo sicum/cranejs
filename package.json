@@ -27,7 +27,7 @@
     "cors": "2.8.4",
     "lodash": "*",
     "consolidate": "0.14.5",
-    "handlebars": "5.0.0-alpha.1",
+    "handlebars": "4.0.10",
     "less": "3.0.0-alpha.2",
     "q": "1.5.0",
     "mongoose": "4.11.14-pre",

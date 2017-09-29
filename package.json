@@ -30,7 +30,7 @@
     "handlebars": "4.0.10",
     "less": "2.7.2",
     "q": "1.5.0",
-    "mongoose": "4.11.13",
+    "mongoose": "4.11.0",
     "mongoose-q": "0.1.0"
   },
   "keywords": [

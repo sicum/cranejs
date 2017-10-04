@@ -160,7 +160,7 @@ _.extend(ioc, events.EventEmitter.prototype, {
         });
 
         //** split the object's children into key/value pairs, and register each, allowing the dev a chance to filter before registration
-        _.pairs(obj).forEach(function(pair) {
+        _.toPairs(obj).forEach(function(pair) {
             if(('apply' in opt.filter) && !opt.filter.apply(this, pair)) return;
             this.register(key +'/'+ pair[0], pair[1], opt);
         }.bind(this));

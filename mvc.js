@@ -12,7 +12,7 @@ var util = require('util'),
     path = require('path'),
     handlebars = require('handlebars'),
     q = require('q'),
-    crane = require('crane-js'),
+    crane = require('./crane'),
     ioc = crane.ioc;
 
 var _app = null,
@@ -173,7 +173,7 @@ function route(handler, req, res, next) { //** simple route handler
     p.error = function(message) { p.response({ message: message }, 500) }
 
     //** used for callbacks to promises for fail state, etc
-    p.errorCallback = function(err) { p.error(err && err.message) }
+    p.errorCallback = function(err) { p.error(typeof err === 'string' ? err : err.message) }
 
     //** call the handler for this route
     util.log('[http] routing: '+ req.url);

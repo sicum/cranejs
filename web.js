@@ -11,6 +11,8 @@ var util = require('util'),
     _ = require('lodash'),
     cons = require('consolidate'),
     express = require('express'),
+    cookieParser = require('cookie-parser'),
+    bodyParser = require('body-parser'),
     _app = null;
 
 
@@ -37,6 +39,7 @@ function web_express(opt) {
         pub: '/pub/',
         views: '/views/',
         logs: '/logs/',
+        pubEndpoint: '/static',
 
         extendMiddleware: true, //** when true, any .middleware function defined will be passed to the default middleware and integrated, vs overwriting it
         middleware: function() {}
@@ -44,23 +47,22 @@ function web_express(opt) {
 
     //** initialize the express app with some common concerns
     _app = express();
-    _app.configure(function() {
-        _app.set('strict routing', opt.strictRouting);
-        _app.set('x-powered-by', false);
+    _app.set('strict routing', opt.strictRouting);
+    _app.set('x-powered-by', false);
 
-        //** initialize the supported rendering engines 
-        !Array.isArray(opt.engine) && (opt.engine = [opt.engine]);
-        opt.engine.forEach(function(obj) { _app.engine(obj.name, cons[obj.handler]); })
+    //** initialize the supported rendering engines
+    !Array.isArray(opt.engine) && (opt.engine = [opt.engine]);
+    opt.engine.forEach(function(obj) { _app.engine(obj.name, cons[obj.handler]); })
 
-        //** set the first registered engine as the default; set the base view path
-        _app.set('view engine', opt.engine[0].name);
-        _app.set('views', opt.root + opt.views);
+    //** set the first registered engine as the default; set the base view path
+    _app.set('view engine', opt.engine[0].name);
+    _app.set('views', opt.root + opt.views);
 
-        //** register the middleware, either extending the default middleware, or overwriting it with a custom middleware stack
-        opt.extendMiddleware
-            ? defaultMiddleware(_app, opt, opt.middleware)
-            : opt.middleware(_app);
-    });
+    //** register the middleware, either extending the default middleware, or overwriting it with a custom middleware stack
+    opt.extendMiddleware ?
+        defaultMiddleware(_app, opt, opt.middleware)
+        :
+        opt.middleware(_app);
 
     return web;
 }
@@ -72,18 +74,15 @@ function web_express(opt) {
 
 function defaultMiddleware(app, opt, cb) {
     //** express middleware (parse all-the-things by default)
-    app.use(express.cookieParser());
-    app.use(express.json());
-    app.use(express.urlencoded());
+    app.use(cookieParser());
+    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.json());
 
     //** fire the callback, to allow injecting middleware such as auth, above the router/static middleware
     cb && cb(app);
 
-    //** try and handle the request via the registered routes
-    app.use(app.router);
-
     //** then try and serve it from the public assets, if possible
-    app.use(express.static(opt.root + opt.pub));
+    app.use(opt.pubEndpoint, express.static(opt.pub));
 }
 
 
@@ -93,8 +92,8 @@ function defaultMiddleware(app, opt, cb) {
 
 var web = (module.exports = {
     //** passes the router to the developer for custom configuration
-    configure: function(cb) { 
-        cb.call(crane, _app); 
+    configure: function(cb) {
+        cb.call(crane, _app);
         return web;
     },
 

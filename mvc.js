@@ -13,6 +13,7 @@ var util = require('util'),
     handlebars = require('handlebars'),
     q = require('q'),
     crane = require('./crane'),
+    web = require('./web'),
     ioc = crane.ioc;
 
 var _app = null,
@@ -227,14 +228,23 @@ function parseMethods(obj, p, ctx) {
         //** if this is the "index" method, wire it up sans named endpoint
         if(m == _opt.indexView) {
             var frag = p != '' && _.last(p) != '/' ? p + '/?' : p;
-            _app.all(_opt.routePrefix + frag, _errorHandler, route.bind(obj, obj[m])); //** for now...
+            var routeMiddleware = web.getRouteLevelMiddleware();
+            typeof routeMiddleware === 'function' ?
+                _app.all(_opt.routePrefix + frag, _errorHandler, routeMiddleware, route.bind(obj, obj[m])) //** for now...
+                :
+                _app.all(_opt.routePrefix + frag, _errorHandler, route.bind(obj, obj[m]));
         } else {
             //**** add translation table here to translate method names before we create endpoints
             //**** ie, translate obj['SomeMethod'] to obj['SomeOtherMethod'] and dont wire up 'SomeMethod'
 
             //** create a callback for every "public" method
             var frag = (p == '' ? p : p + '/') + (_.last(m) != '/' ? m + '/?' : m);
-            _app.all(_opt.routePrefix + frag, _errorHandler, route.bind(ctx, obj[m])); //** for now as well...
+            var routeMiddleware = web.getRouteLevelMiddleware();
+            typeof routeMiddleware === 'function' ?
+                _app.all(_opt.routePrefix + frag, _errorHandler, routeMiddleware, route.bind(ctx, obj[m])) //** for now as well...
+                :
+                _app.all(_opt.routePrefix + frag, _errorHandler, route.bind(ctx, obj[m]));
+
         }
     }
 }

@@ -15,6 +15,11 @@ var util = require('util'),
     bodyParser = require('body-parser'),
     _app = null;
 
+var _routeLevelMiddleware = null;
+
+function _getRouteLevelMiddleware() {
+    return _routeLevelMiddleware;
+}
 
 //** web server factory methods
 //** ----
@@ -42,8 +47,11 @@ function web_express(opt) {
         pubEndpoint: '/static',
 
         extendMiddleware: true, //** when true, any .middleware function defined will be passed to the default middleware and integrated, vs overwriting it
-        middleware: function() {}
+        middleware: () => {},
+        routeLevelMiddleware: (req, res, next) => next(),
     });
+
+    _routeLevelMiddleware = opt.routeLevelMiddleware;
 
     //** initialize the express app with some common concerns
     _app = express();
@@ -75,7 +83,7 @@ function web_express(opt) {
 function defaultMiddleware(app, opt, cb) {
     //** express middleware (parse all-the-things by default)
     app.use(cookieParser());
-    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
 
     //** fire the callback, to allow injecting middleware such as auth, above the router/static middleware
@@ -105,8 +113,9 @@ var web = (module.exports = {
 
     //** the web server factory objects
     express: web_express,
-    nodejs: web_nodejs
+    nodejs: web_nodejs,
 
+    getRouteLevelMiddleware: _getRouteLevelMiddleware,
 });
 
 //** create the read-only .app property of the web component, to return the app instance

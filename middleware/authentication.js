@@ -17,11 +17,11 @@ var auth = (module.exports = {
                 domain: opt.authCookieDomain||(options.authCookieDomain||null),
                 expires: opt.timeout || options.timeout, //** default is 14 days
                 httpOnly: opt.httpOnly===false?false:true
-            }) 
+            })
         },
 
         //** get the auth cookie based on the options, for the given request
-        get: function(req, decrypt) { 
+        get: function(req, decrypt) {
             var cookie = req.cookies[options.authCookie];
 
             //** decrypt the cookie's if needed
@@ -73,7 +73,7 @@ var auth = (module.exports = {
         //** cookie based authentication; supply the cookie name to look for, the url to redirect to, and any options
         cookie: function(domain, cookieName, authUrl, opt) {
             //** allow opt to be a fail: function()
-            if(typeof(opt) == 'function') opt = { fail: opt }; 
+            if(typeof(opt) == 'function') opt = { fail: opt };
             //** allow authUrl to be a opt
             if(typeof(authUrl) == 'object') { opt = authUrl; authUrl = null; }
 
@@ -105,9 +105,12 @@ var auth = (module.exports = {
                     req.cookie = auth.cookie.get(req, false);
                     req.user = data;
                 }
+                else {
+                    req.user = {};
+                }
 
                 //** if the user is present, or we're serving static assets, skip auth
-                if(req.user 
+                if(req.user
                     || /^\/auth\/?(.*?)?/.test(uri.pathname) //** auth urls
                     || new RegExp('^\/('+ options.public +')\/?(.*?)').test(uri.pathname)) //** static resource urls
                     return next();
